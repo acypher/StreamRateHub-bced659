@@ -85,30 +85,53 @@ async function scrapeRottenTomatoes(query: string): Promise<Partial<ScrapedData>
 
     const $movie = cheerio.load(movieResponse.data);
 
-    // Extract title
-    const title = $movie('h1[slot="titleIntro"]').text().trim() ||
-                  $movie('h1.title').text().trim() ||
-                  query;
-
-    // Extract year
-    const year = $movie('p[slot="releaseDate"]').text().trim().match(/\d{4}/)?.[0];
-
-    // Extract ratings
-    const tomatometer = $movie('rt-button[slot="criticsScore"]').attr('percentage') ||
-                       $movie('score-board').attr('tomatometerscore');
-    const audienceScore = $movie('rt-button[slot="audienceScore"]').attr('percentage') ||
-                         $movie('score-board').attr('audiencescore');
-
-    // Extract plot
-    const plot = $movie('p[slot="description"]').text().trim() ||
-                $movie('div.movie_synopsis').text().trim();
-
-    // Extract cast
+    // Extract title and year from JSON-LD structured data
+    let title = query;
+    let year: string | undefined;
+    let tomatometer: string | undefined;
+    let audienceScore: string | undefined;
+    let plot: string | undefined;
     const cast: string[] = [];
-    $movie('div.cast-item').each((_, el) => {
-      const actorName = $movie(el).find('a').text().trim();
-      if (actorName) cast.push(actorName);
-    });
+
+    // Try to extract data from JSON-LD
+    const jsonLdScript = $movie('script[type="application/ld+json"]').first();
+    if (jsonLdScript.length > 0) {
+      try {
+        const jsonData = JSON.parse(jsonLdScript.html() || '{}');
+        if (jsonData.name) title = jsonData.name;
+        if (jsonData.dateCreated) {
+          const yearMatch = jsonData.dateCreated.match(/\d{4}/);
+          if (yearMatch) year = yearMatch[0];
+        }
+        if (jsonData.aggregateRating?.ratingValue) {
+          tomatometer = jsonData.aggregateRating.ratingValue.toString();
+        }
+        if (jsonData.description) plot = jsonData.description;
+        if (jsonData.actor && Array.isArray(jsonData.actor)) {
+          jsonData.actor.slice(0, 8).forEach((actor: { name?: string }) => {
+            if (actor.name) cast.push(actor.name);
+          });
+        }
+      } catch (e) {
+        const err = e as Error;
+        console.log('[ScrapingService] Failed to parse RT JSON-LD:', err.message);
+      }
+    }
+
+    // Try to extract ratings from embedded JSON data
+    const htmlContent = movieResponse.data;
+    const jsonMatch = htmlContent.match(/"audienceScore":\{[^}]*"score":"(\d+)"[^}]*\}[^}]*"criticsScore":\{[^}]*"score":"(\d+)"/);
+    if (jsonMatch) {
+      audienceScore = jsonMatch[1];
+      tomatometer = jsonMatch[2];
+    } else {
+      // Alternative pattern
+      const altMatch = htmlContent.match(/"criticsScore":\{[^}]*"score":"(\d+)"[^}]*\}[^}]*"audienceScore":\{[^}]*"score":"(\d+)"/);
+      if (altMatch) {
+        tomatometer = altMatch[1];
+        audienceScore = altMatch[2];
+      }
+    }
 
     console.log(`[ScrapingService] Rotten Tomatoes data extracted: Tomatometer=${tomatometer}%, Audience=${audienceScore}%`);
 
@@ -121,10 +144,11 @@ async function scrapeRottenTomatoes(query: string): Promise<Partial<ScrapedData>
         audienceRating: audienceScore ? `${audienceScore}%` : 'N/A',
       }],
       plot: plot || undefined,
-      cast: cast.length > 0 ? cast.slice(0, 8) : undefined,
+      cast: cast.length > 0 ? cast : undefined,
     };
   } catch (error) {
-    console.error(`[ScrapingService] Rotten Tomatoes error: ${error.message}`);
+    const err = error as Error;
+    console.error(`[ScrapingService] Rotten Tomatoes error: ${err.message}`);
     return {
       ratings: [{
         source: 'Rotten Tomatoes',
@@ -154,21 +178,22 @@ async function scrapeMetacritic(query: string): Promise<Partial<ScrapedData>> {
 
     const $ = cheerio.load(response.data);
 
-    // Find first movie or TV result
-    const firstResult = $('.c-finderProductCard').first();
+    // Find first movie or TV result - try multiple selectors
+    let movieLink: string | undefined;
 
-    if (firstResult.length === 0) {
-      console.log('[ScrapingService] No Metacritic results found');
-      return {
-        ratings: [{
-          source: 'Metacritic',
-          criticsRating: 'N/A',
-          audienceRating: 'N/A',
-        }],
-      };
+    // Try new structure first
+    const searchResultItem = $('a[data-testid="search-result-item"]').first();
+    if (searchResultItem.length > 0) {
+      movieLink = searchResultItem.attr('href');
     }
 
-    const movieLink = firstResult.find('a.c-finderProductCard_link').attr('href');
+    // Fallback to old structure
+    if (!movieLink) {
+      const firstResult = $('.c-finderProductCard').first();
+      if (firstResult.length > 0) {
+        movieLink = firstResult.find('a.c-finderProductCard_link').attr('href');
+      }
+    }
 
     if (!movieLink) {
       console.log('[ScrapingService] No Metacritic movie link found');
@@ -194,24 +219,49 @@ async function scrapeMetacritic(query: string): Promise<Partial<ScrapedData>> {
 
     const $movie = cheerio.load(movieResponse.data);
 
-    // Extract Metascore (critics)
-    const metascore = $movie('.c-siteReviewScore_background span').first().text().trim() ||
-                     $movie('div[title*="Metascore"]').text().trim();
-
-    // Extract User Score
-    const userScore = $movie('.c-siteReviewScore_user span').first().text().trim() ||
-                     $movie('div.c-productScoreInfo_scoreNumber span').text().trim();
-
-    // Extract plot summary
-    const plot = $movie('.c-productionDetailsGame_description span').text().trim() ||
-                $movie('.c-productDetails_description').text().trim();
-
-    // Extract cast
+    let metascore: string | undefined;
+    let userScore: string | undefined;
+    let plot: string | undefined;
     const cast: string[] = [];
-    $movie('.c-castList_item').each((_, el) => {
-      const actorName = $movie(el).find('span').first().text().trim();
-      if (actorName) cast.push(actorName);
-    });
+
+    // Try to extract data from JSON-LD structured data
+    const jsonLdScript = $movie('script[type="application/ld+json"]').first();
+    if (jsonLdScript.length > 0) {
+      try {
+        const jsonData = JSON.parse(jsonLdScript.html() || '{}');
+        if (jsonData.aggregateRating?.ratingValue) {
+          metascore = jsonData.aggregateRating.ratingValue.toString();
+        }
+        if (jsonData.description) plot = jsonData.description;
+        if (jsonData.actor && Array.isArray(jsonData.actor)) {
+          jsonData.actor.slice(0, 8).forEach((actor: { name?: string }) => {
+            if (actor.name) cast.push(actor.name);
+          });
+        }
+      } catch (e) {
+        const err = e as Error;
+        console.log('[ScrapingService] Failed to parse Metacritic JSON-LD:', err.message);
+      }
+    }
+
+    // Try to extract Metascore from HTML if not found in JSON-LD
+    if (!metascore) {
+      const scoreSpan = $movie('.c-siteReviewScore_background span').first().text().trim();
+      if (scoreSpan && /^\d+$/.test(scoreSpan)) {
+        metascore = scoreSpan;
+      }
+    }
+
+    // Try to extract user score from HTML
+    const userScoreText = $movie('div[data-testid="user-score-info"]').find('.c-siteReviewScore span').text().trim();
+    if (userScoreText && /^\d+\.?\d*$/.test(userScoreText)) {
+      userScore = userScoreText;
+    }
+
+    // Extract plot if not found in JSON-LD
+    if (!plot) {
+      plot = $movie('.c-productDetails_description').text().trim();
+    }
 
     console.log(`[ScrapingService] Metacritic data extracted: Metascore=${metascore}, User Score=${userScore}`);
 
@@ -225,7 +275,8 @@ async function scrapeMetacritic(query: string): Promise<Partial<ScrapedData>> {
       cast: cast.length > 0 ? cast.slice(0, 8) : undefined,
     };
   } catch (error) {
-    console.error(`[ScrapingService] Metacritic error: ${error.message}`);
+    const err = error as Error;
+    console.error(`[ScrapingService] Metacritic error: ${err.message}`);
     return {
       ratings: [{
         source: 'Metacritic',
@@ -349,7 +400,8 @@ async function scrapeIMDB(query: string): Promise<Partial<ScrapedData>> {
       reviewerSummary: reviewTexts.length > 0 ? reviewTexts.join(' ') : undefined,
     };
   } catch (error) {
-    console.error(`[ScrapingService] IMDB error: ${error.message}`);
+    const err = error as Error;
+    console.error(`[ScrapingService] IMDB error: ${err.message}`);
     return {
       ratings: [{
         source: 'IMDB',
@@ -418,7 +470,8 @@ export async function scrapeMediaData(query: string): Promise<ScrapedData> {
 
     return aggregatedData;
   } catch (error) {
-    console.error(`[ScrapingService] Fatal scraping error: ${error.message}`, error);
+    const err = error as Error;
+    console.error(`[ScrapingService] Fatal scraping error: ${err.message}`, error);
     throw new Error('Failed to scrape media data from all sources');
   }
 }
