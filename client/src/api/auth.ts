@@ -32,10 +32,10 @@ export const login = async (email: string, password: string) => {
 // Description: Register user functionality
 // Endpoint: POST /api/auth/register
 // Request: { email: string, password: string }
-// Response: { email: string }
+// Response: User fields spread at root level + { accessToken: string, refreshToken: string }
 export const register = async (email: string, password: string) => {
   try {
-    return { email: 'jake@example.com' }; // pythagora_mocked_data - remove when the backend is being implemented
+    return getLoginMockData(email); // pythagora_mocked_data - remove when the backend is being implemented
     const response = await api.post('/api/auth/register', {email, password});
     return response.data;
   } catch (error) {
