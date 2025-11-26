@@ -12,10 +12,9 @@ function getRatingColor(rating: string): string {
   const numericRating = parseFloat(rating);
   const percentage = rating.includes('%') ? numericRating : rating.includes('/100') ? numericRating : numericRating * 10;
 
-  if (percentage >= 75) return 'text-green-600 dark:text-green-400';
-  if (percentage >= 50) return 'text-yellow-600 dark:text-yellow-400';
-  // Use black text for poor ratings with light red background for better readability
-  return 'text-black dark:text-white';
+  if (percentage >= 75) return 'text-white dark:text-white';
+  if (percentage >= 50) return 'text-gray-900 dark:text-gray-900';
+  return 'text-white dark:text-white';
 }
 
 function getRatingBadgeVariant(rating: string): 'default' | 'secondary' | 'destructive' {
@@ -31,11 +30,19 @@ function getRatingBadgeClass(rating: string): string {
   const numericRating = parseFloat(rating);
   const percentage = rating.includes('%') ? numericRating : rating.includes('/100') ? numericRating : numericRating * 10;
 
-  // Override background color for poor ratings with very light red and black text
-  if (percentage < 50) {
-    return 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-800';
+  // Use green for high ratings, yellow for medium, red for low
+  if (percentage >= 75) {
+    return 'bg-green-600 dark:bg-green-600 border-green-700 dark:border-green-700';
   }
-  return '';
+  if (percentage >= 50) {
+    return 'bg-yellow-500 dark:bg-yellow-500 border-yellow-600 dark:border-yellow-600';
+  }
+  return 'bg-red-600 dark:bg-red-600 border-red-700 dark:border-red-700';
+}
+
+function stripRatingUnit(rating: string): string {
+  // Remove %, /10, /100 from ratings - just show the number
+  return rating.replace(/%|\/10|\/100/g, '').trim();
 }
 
 export function RatingsTable({ ratings }: RatingsTableProps) {
@@ -82,15 +89,17 @@ export function RatingsTable({ ratings }: RatingsTableProps) {
                   className="hover:bg-gray-50 dark:hover:bg-gray-900/30 transition-colors"
                 >
                   <TableCell className="font-semibold text-base">{rating.source}</TableCell>
-                  <TableCell className={isIMDB ? 'opacity-40' : ''}>
+                  <TableCell>
                     {isIMDB ? (
-                      <span className="text-muted-foreground italic">N/A</span>
+                      <div className="inline-block bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-md italic text-base">
+                        N/A
+                      </div>
                     ) : rating.criticsRating ? (
                       <Badge
                         variant={getRatingBadgeVariant(rating.criticsRating)}
                         className={`text-base px-3 py-1 font-bold ${getRatingColor(rating.criticsRating)} ${getRatingBadgeClass(rating.criticsRating)}`}
                       >
-                        {rating.criticsRating}
+                        {stripRatingUnit(rating.criticsRating)}
                       </Badge>
                     ) : (
                       <span className="text-muted-foreground italic">N/A</span>
@@ -102,14 +111,14 @@ export function RatingsTable({ ratings }: RatingsTableProps) {
                         variant={getRatingBadgeVariant(imdbScore)}
                         className={`text-base px-3 py-1 font-bold ${getRatingColor(imdbScore)} ${getRatingBadgeClass(imdbScore)}`}
                       >
-                        {imdbScore}
+                        {stripRatingUnit(imdbScore)}
                       </Badge>
                     ) : rating.audienceRating ? (
                       <Badge
                         variant={getRatingBadgeVariant(rating.audienceRating)}
                         className={`text-base px-3 py-1 font-bold ${getRatingColor(rating.audienceRating)} ${getRatingBadgeClass(rating.audienceRating)}`}
                       >
-                        {rating.audienceRating}
+                        {stripRatingUnit(rating.audienceRating)}
                       </Badge>
                     ) : (
                       <span className="text-muted-foreground italic">N/A</span>
