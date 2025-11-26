@@ -2,16 +2,10 @@ import dotenv from 'dotenv';
 import express from 'express';
 import { Request, Response } from 'express';
 import basicRoutes from './routes/index';
-import { connectDB } from './config/database';
 import cors from 'cors';
 
 // Load environment variables
 dotenv.config();
-
-if (!process.env.DATABASE_URL) {
-  console.error("Error: DATABASE_URL variables in .env missing.");
-  process.exit(-1);
-}
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -50,9 +44,6 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Database connection
-connectDB();
 
 app.on("error", (error: Error) => {
   console.error(`Server error: ${error.message}`);
