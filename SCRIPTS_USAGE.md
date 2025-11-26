@@ -19,6 +19,11 @@ node scripts/check-dependencies.js
 node scripts/test-api.js
 ```
 
+### Test the CORS configuration:
+```bash
+node scripts/test-cors.js
+```
+
 ## Common Question: What directory should I be in?
 
 **Use `pwd` to check your current directory:**

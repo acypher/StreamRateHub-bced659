@@ -22,7 +22,28 @@ node test-api.js
 
 ## Available Scripts
 
-### 1. API Testing Script
+### 1. CORS Configuration Test
+
+**File:** `test-cors.js`
+
+**Purpose:** Verifies that the CORS (Cross-Origin Resource Sharing) configuration is set up correctly to allow requests from the preview environment.
+
+**Usage (from project root):**
+```bash
+node scripts/test-cors.js
+```
+
+**What it does:**
+- Tests if the API accepts requests from the Pythagora preview origin
+- Verifies CORS headers are properly set
+- Confirms the API is accessible
+
+**When to use:**
+- After updating the preview URL
+- When debugging CORS-related errors
+- Before deploying to a new environment
+
+### 2. API Testing Script
 
 **File:** `test-api.js`
 
@@ -51,7 +72,7 @@ node scripts/test-api.js
 API_URL=https://your-api-url.com node scripts/test-api.js
 ```
 
-### 2. Dependency Check Script
+### 3. Dependency Check Script
 
 **File:** `check-dependencies.js`
 
@@ -104,6 +125,9 @@ cd /pythagora/pythagora-core/workspace/StreamRateHub-bced659
 
 # Check all dependencies
 node scripts/check-dependencies.js
+
+# Test CORS configuration
+node scripts/test-cors.js
 
 # Test the API
 node scripts/test-api.js

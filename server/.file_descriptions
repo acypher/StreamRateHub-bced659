@@ -1,9 +1,2 @@
 server/routes/searchRoutes.ts: Express router handling media search requests with POST /api/search endpoint that accepts query parameter and returns aggregated movie/TV show data by calling scrapingService.
 server/services/scrapingService.ts: Web scraping service that aggregates movie/TV show ratings from Rotten Tomatoes, Metacritic, and IMDB using axios, cheerio, and bottleneck for rate limiting; exports scrapeMediaData function.
-server/scripts/README.md: Documentation explaining why the backend server exists and how to use utility scripts for database seeding, cleanup, and API testing.
-server/scripts/cleanDatabase.ts: Database cleanup script that removes all users and documents from MongoDB collections, useful for testing and development environment reset.
-server/scripts/seedAdmin.ts: Database seeding script that creates a default admin user with predefined credentials for initial setup and testing.
-server/scripts/seedTestUsers.ts: Database seeding script that creates multiple test users with different roles (admin and user) for development and testing purposes.
-server/scripts/testAuth.ts: API testing script that validates the complete authentication flow including registration, login, profile retrieval, token refresh, logout, and protected route access.
-server/scripts/testSearch.ts: Test script for search API that makes POST request to /api/search endpoint with "Breaking Bad" query to verify backend scraping functionality.
-server/scripts/testMultipleSearches.ts: Test script that runs multiple search queries (Inception, The Crown, Stranger Things) to validate API endpoint and display formatted results.
