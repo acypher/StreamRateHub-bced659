@@ -2,7 +2,10 @@
  * Script to check if all required dependencies are installed and services are available
  * This helps diagnose issues before running the application
  *
- * Usage: node scripts/check-dependencies.js
+ * IMPORTANT: Run this script from the project root directory!
+ *
+ * ✅ Correct:   node scripts/check-dependencies.js
+ * ❌ Incorrect: cd scripts && node check-dependencies.js
  */
 
 const { execSync } = require('child_process');

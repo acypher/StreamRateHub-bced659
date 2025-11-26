@@ -2,7 +2,10 @@
  * Script to test the CineCite API endpoints
  * This script tests the search functionality without requiring a database
  *
- * Usage: node scripts/test-api.js
+ * IMPORTANT: Run this script from the project root directory!
+ *
+ * ✅ Correct:   node scripts/test-api.js
+ * ❌ Incorrect: cd scripts && node test-api.js
  */
 
 const axios = require('axios');

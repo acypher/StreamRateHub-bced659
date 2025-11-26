@@ -2,6 +2,24 @@
 
 This directory contains utility scripts for testing and maintaining the CineCite application.
 
+## Important: Running Scripts
+
+**You must run these scripts from the project root directory**, not from inside the `scripts/` directory.
+
+✅ **Correct:**
+```bash
+# From project root (/pythagora/pythagora-core/workspace/StreamRateHub-bced659/)
+node scripts/test-api.js
+node scripts/check-dependencies.js
+```
+
+❌ **Incorrect:**
+```bash
+# Don't do this - will fail
+cd scripts
+node test-api.js
+```
+
 ## Available Scripts
 
 ### 1. API Testing Script
@@ -10,7 +28,7 @@ This directory contains utility scripts for testing and maintaining the CineCite
 
 **Purpose:** Tests the CineCite API endpoints to ensure the scraping service is working correctly.
 
-**Usage:**
+**Usage (from project root):**
 ```bash
 node scripts/test-api.js
 ```
@@ -39,7 +57,7 @@ API_URL=https://your-api-url.com node scripts/test-api.js
 
 **Purpose:** Verifies that all required dependencies and configurations are in place before running the application.
 
-**Usage:**
+**Usage (from project root):**
 ```bash
 node scripts/check-dependencies.js
 ```
@@ -81,6 +99,9 @@ When creating new scripts:
 
 ### Running Tests Before Deployment
 ```bash
+# Make sure you're in the project root directory first!
+cd /pythagora/pythagora-core/workspace/StreamRateHub-bced659
+
 # Check all dependencies
 node scripts/check-dependencies.js
 
