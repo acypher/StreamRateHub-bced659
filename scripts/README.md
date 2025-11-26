@@ -1,6 +1,6 @@
-# CineCite Utility Scripts
+# StreamRateHub Utility Scripts
 
-This directory contains utility scripts for testing and maintaining the CineCite application.
+This directory contains utility scripts for testing, maintaining, and verifying the StreamRateHub application.
 
 ## Important: Running Scripts
 
@@ -9,6 +9,7 @@ This directory contains utility scripts for testing and maintaining the CineCite
 ✅ **Correct:**
 ```bash
 # From project root (/pythagora/pythagora-core/workspace/StreamRateHub-bced659/)
+node scripts/verify-deployment.js
 node scripts/test-api.js
 node scripts/check-dependencies.js
 ```
@@ -20,9 +21,38 @@ cd scripts
 node test-api.js
 ```
 
+## Permanent URL
+
+StreamRateHub is deployed at: **https://preview-01x0eatj.ui.pythagora.ai**
+
+See the `.deployment-url` file in the project root for more details about available endpoints.
+
 ## Available Scripts
 
-### 1. CORS Configuration Test
+### 1. Deployment Verification
+
+**File:** `verify-deployment.js`
+
+**Purpose:** Verifies that the StreamRateHub application is properly deployed and accessible at the permanent URL.
+
+**Usage (from project root):**
+```bash
+node scripts/verify-deployment.js
+```
+
+**What it does:**
+- Tests frontend availability at https://preview-01x0eatj.ui.pythagora.ai
+- Verifies backend health check endpoint
+- Tests the search API endpoint with a sample query
+- Provides detailed test results with response times
+
+**When to use:**
+- After deployment to verify everything is working
+- To check if the permanent URL is accessible
+- As part of CI/CD pipeline
+- When troubleshooting deployment issues
+
+### 2. CORS Configuration Test
 
 **File:** `test-cors.js`
 
@@ -47,7 +77,7 @@ node scripts/test-cors.js
 
 **File:** `test-api.js`
 
-**Purpose:** Tests the CineCite API endpoints to ensure the scraping service is working correctly.
+**Purpose:** Tests the StreamRateHub API endpoints to ensure the scraping service is working correctly.
 
 **Usage (from project root):**
 ```bash
@@ -96,16 +126,54 @@ node scripts/check-dependencies.js
 - When troubleshooting setup issues
 - Before deployment
 
+### 4. Database Seed Script
+
+**File:** `seed-data.js`
+
+**Purpose:** Placeholder script for seeding the database with initial data if needed in the future.
+
+**Usage (from project root):**
+```bash
+node scripts/seed-data.js
+```
+
+**What it does:**
+- Currently a placeholder for future extensibility
+- Can be extended to add admin users, popular search suggestions, or cached data
+
+**When to use:**
+- When adding initial data requirements in the future
+- For setting up default configuration values
+
+### 5. Database Cleanup Script
+
+**File:** `cleanup-database.js`
+
+**Purpose:** Placeholder script for cleaning up cached data or temporary records.
+
+**Usage (from project root):**
+```bash
+node scripts/cleanup-database.js
+```
+
+**What it does:**
+- Currently a placeholder for future extensibility
+- Can be extended to clear cached search results or temporary session data
+
+**When to use:**
+- When implementing caching features in the future
+- For cleaning up expired sessions or temporary data
+
 ## Notes
 
-### No Database Required
+### No Database Required (Currently)
 
-CineCite does not use a database for storing data. All movie/TV show information is fetched in real-time from:
+StreamRateHub currently does not use a database for storing data. All movie/TV show information is fetched in real-time from:
 - Rotten Tomatoes
 - Metacritic
 - IMDB
 
-The scripts in this directory are designed to work without database dependencies.
+The scripts in this directory are designed to work without database dependencies, but include placeholders for future extensibility.
 
 ### Script Development Guidelines
 
@@ -117,6 +185,15 @@ When creating new scripts:
 5. Keep scripts focused on a single purpose
 
 ## Common Tasks
+
+### Verifying Deployment
+```bash
+# Make sure you're in the project root directory first!
+cd /pythagora/pythagora-core/workspace/StreamRateHub-bced659
+
+# Verify the permanent URL is accessible
+node scripts/verify-deployment.js
+```
 
 ### Running Tests Before Deployment
 ```bash
@@ -131,6 +208,9 @@ node scripts/test-cors.js
 
 # Test the API
 node scripts/test-api.js
+
+# Verify the deployment
+node scripts/verify-deployment.js
 ```
 
 ### Quick Diagnosis

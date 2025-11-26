@@ -1,2 +1,11 @@
-server/routes/searchRoutes.ts: Express router handling media search requests with POST /api/search endpoint that accepts query parameter and returns aggregated movie/TV show data by calling scrapingService.
-server/services/scrapingService.ts: Web scraping service that aggregates movie/TV show ratings from Rotten Tomatoes, Metacritic, and IMDB using axios, cheerio, and bottleneck for rate limiting; exports scrapeMediaData function.
+# Server File Descriptions
+
+server/routes/index.ts: Main Express router that configures root endpoints (welcome, ping), health check endpoint for monitoring, and delegates search functionality to searchRoutes, exporting the complete application router.
+
+server/routes/searchRoutes.ts: Express router for media search endpoints supporting both GET and POST requests, accepting query strings and returning aggregated movie/TV show data including ratings, plot, cast, and reviews from multiple sources via the scraping service.
+
+server/services/scrapingService.ts: Web scraping service that aggregates movie/TV show data from Rotten Tomatoes, Metacritic, and IMDB using rate-limited HTTP requests and HTML parsing, exporting scrapeMediaData function that returns consolidated ratings, plot, cast, and metadata.
+
+server/services/llmService.ts: LLM service layer with retry logic for multi-provider API integration, exporting sendLLMRequest function to route requests to OpenAI or Anthropic based on provider parameter.
+
+server/server.ts: Express server entry point with environment configuration, CORS middleware for multi-origin support including Pythagora preview URL, request parsing, error handling, and route initialization on configurable port.

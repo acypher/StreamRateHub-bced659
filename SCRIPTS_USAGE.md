@@ -1,5 +1,12 @@
 # Quick Reference: Running Utility Scripts
 
+## 🌐 Permanent URL
+
+**StreamRateHub is accessible at:**
+https://preview-01x0eatj.ui.pythagora.ai
+
+See `PERMANENT_URL.md` for detailed API documentation.
+
 ## Where to Run Scripts From
 
 **Always run scripts from the project root directory:**
@@ -8,6 +15,11 @@
 ```
 
 ## Quick Commands
+
+### Verify the deployment is accessible:
+```bash
+node scripts/verify-deployment.js
+```
 
 ### Check if your project is set up correctly:
 ```bash
@@ -22,6 +34,16 @@ node scripts/test-api.js
 ### Test the CORS configuration:
 ```bash
 node scripts/test-cors.js
+```
+
+### Seed the database (placeholder for future use):
+```bash
+node scripts/seed-data.js
+```
+
+### Clean up the database (placeholder for future use):
+```bash
+node scripts/cleanup-database.js
 ```
 
 ## Common Question: What directory should I be in?

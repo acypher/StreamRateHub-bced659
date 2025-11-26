@@ -1,0 +1,24 @@
+# Permanent Deployment URL for StreamRateHub
+
+## Production URL
+https://preview-01x0eatj.ui.pythagora.ai
+
+## API Base URL
+https://preview-01x0eatj.ui.pythagora.ai/api
+
+## Backend Health Check
+https://preview-01x0eatj.ui.pythagora.ai/api/health
+
+## Key Endpoints
+- Search Media: POST https://preview-01x0eatj.ui.pythagora.ai/api/search?query={searchTerm}
+- Health Check: GET https://preview-01x0eatj.ui.pythagora.ai/api/health
+
+## Local Development URLs
+- Frontend: http://localhost:5173
+- Backend: http://localhost:3000
+- Backend API: http://localhost:3000/api
+
+## Notes
+- This URL is permanent and should be used for production access
+- The application uses a React frontend with Express backend
+- CORS is configured to allow requests from the Pythagora preview domain
