@@ -91,9 +91,8 @@ export function RatingsTable({ ratings }: RatingsTableProps) {
                   <TableCell className="font-semibold text-base">{rating.source}</TableCell>
                   <TableCell>
                     {isIMDB ? (
-                      <div className="inline-block bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-400 px-3 py-1 rounded-md italic text-base">
-                        N/A
-                      </div>
+                      // IMDB doesn't have a separate critics rating, so leave empty
+                      <span></span>
                     ) : rating.criticsRating ? (
                       <Badge
                         variant={getRatingBadgeVariant(rating.criticsRating)}
