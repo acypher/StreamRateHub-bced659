@@ -23,7 +23,7 @@ node test-api.js
 
 ## Permanent URL
 
-StreamRateHub is deployed at: **https://preview-0hf1ju3b.ui.pythagora.ai**
+StreamRateHub is deployed at: **https://preview-0ag1onvs.ui.pythagora.ai**
 
 See the `.deployment-url` file in the project root for more details about available endpoints.
 
@@ -41,7 +41,7 @@ node scripts/verify-deployment.js
 ```
 
 **What it does:**
-- Tests frontend availability at https://preview-0hf1ju3b.ui.pythagora.ai
+- Tests frontend availability at https://preview-0ag1onvs.ui.pythagora.ai
 - Verifies backend health check endpoint
 - Tests the search API endpoint with a sample query
 - Provides detailed test results with response times

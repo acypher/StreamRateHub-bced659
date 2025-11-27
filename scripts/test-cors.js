@@ -32,7 +32,7 @@ async function testCORS() {
   logSection('Testing CORS Configuration');
 
   const baseURL = 'http://localhost:3000';
-  const previewOrigin = 'https://preview-0hf1ju3b.ui.pythagora.ai';
+  const previewOrigin = 'https://preview-0ag1onvs.ui.pythagora.ai';
 
   try {
     log('Testing API endpoint with preview origin...', colors.yellow);

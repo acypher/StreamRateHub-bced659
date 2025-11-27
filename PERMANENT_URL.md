@@ -3,7 +3,7 @@
 ## 🌐 Production URLs
 
 ### Main Application URL
-**https://preview-0hf1ju3b.ui.pythagora.ai**
+**https://preview-0ag1onvs.ui.pythagora.ai**
 
 This is your permanent, stable URL for accessing the StreamRateHub application. You can bookmark this URL and use it to access the application at any time.
 
@@ -15,7 +15,7 @@ All API endpoints are accessible via HTTPS at the base URL above.
 
 ### Health Check
 - **Endpoint**: `GET /api/health`
-- **Full URL**: https://preview-0hf1ju3b.ui.pythagora.ai/api/health
+- **Full URL**: https://preview-0ag1onvs.ui.pythagora.ai/api/health
 - **Purpose**: Check if the API is running and responsive
 - **Response**:
   ```json
@@ -29,7 +29,7 @@ All API endpoints are accessible via HTTPS at the base URL above.
 
 ### Search for Movies/TV Shows (POST)
 - **Endpoint**: `POST /api/search`
-- **Full URL**: https://preview-0hf1ju3b.ui.pythagora.ai/api/search
+- **Full URL**: https://preview-0ag1onvs.ui.pythagora.ai/api/search
 - **Purpose**: Search for a movie or TV show and get aggregated ratings
 - **Request Body**:
   ```json
@@ -67,7 +67,7 @@ All API endpoints are accessible via HTTPS at the base URL above.
 
 ### Search for Movies/TV Shows (GET)
 - **Endpoint**: `GET /api/search?query={searchTerm}`
-- **Full URL**: https://preview-0hf1ju3b.ui.pythagora.ai/api/search?query=Inception
+- **Full URL**: https://preview-0ag1onvs.ui.pythagora.ai/api/search?query=Inception
 - **Purpose**: Search for a movie or TV show (convenient for browser testing)
 - **Query Parameters**:
   - `query` (required): The name of the movie or TV show to search for
@@ -78,20 +78,20 @@ All API endpoints are accessible via HTTPS at the base URL above.
 ## 🔧 Testing the Permanent URL
 
 ### Using a Web Browser
-1. **Test the application**: Navigate to https://preview-0hf1ju3b.ui.pythagora.ai
-2. **Test the health endpoint**: Navigate to https://preview-0hf1ju3b.ui.pythagora.ai/api/health
-3. **Test a search**: Navigate to https://preview-0hf1ju3b.ui.pythagora.ai/api/search?query=Inception
+1. **Test the application**: Navigate to https://preview-0ag1onvs.ui.pythagora.ai
+2. **Test the health endpoint**: Navigate to https://preview-0ag1onvs.ui.pythagora.ai/api/health
+3. **Test a search**: Navigate to https://preview-0ag1onvs.ui.pythagora.ai/api/search?query=Inception
 
 ### Using cURL
 ```bash
 # Health check
-curl https://preview-0hf1ju3b.ui.pythagora.ai/api/health
+curl https://preview-0ag1onvs.ui.pythagora.ai/api/health
 
 # Search (GET)
-curl "https://preview-0hf1ju3b.ui.pythagora.ai/api/search?query=Inception"
+curl "https://preview-0ag1onvs.ui.pythagora.ai/api/search?query=Inception"
 
 # Search (POST)
-curl -X POST https://preview-0hf1ju3b.ui.pythagora.ai/api/search \
+curl -X POST https://preview-0ag1onvs.ui.pythagora.ai/api/search \
   -H "Content-Type: application/json" \
   -d '{"query": "Inception"}'
 ```
@@ -130,10 +130,10 @@ No additional environment configuration is needed for the permanent URL. The app
 
 | Purpose | URL |
 |---------|-----|
-| Main Application | https://preview-0hf1ju3b.ui.pythagora.ai |
-| Health Check | https://preview-0hf1ju3b.ui.pythagora.ai/api/health |
-| Search (GET) | https://preview-0hf1ju3b.ui.pythagora.ai/api/search?query={term} |
-| Search (POST) | https://preview-0hf1ju3b.ui.pythagora.ai/api/search |
+| Main Application | https://preview-0ag1onvs.ui.pythagora.ai |
+| Health Check | https://preview-0ag1onvs.ui.pythagora.ai/api/health |
+| Search (GET) | https://preview-0ag1onvs.ui.pythagora.ai/api/search?query={term} |
+| Search (POST) | https://preview-0ag1onvs.ui.pythagora.ai/api/search |
 
 ---
 
