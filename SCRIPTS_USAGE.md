@@ -3,7 +3,7 @@
 ## 🌐 Permanent URL
 
 **StreamRateHub is accessible at:**
-https://preview-01x0eatj.ui.pythagora.ai
+https://preview-0hf1ju3b.ui.pythagora.ai
 
 See `PERMANENT_URL.md` for detailed API documentation.
 

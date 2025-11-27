@@ -2,7 +2,7 @@
 
 ## Your Permanent URL
 
-### **https://preview-01x0eatj.ui.pythagora.ai**
+### **https://preview-0hf1ju3b.ui.pythagora.ai**
 
 Bookmark this URL - it's your permanent access point to StreamRateHub!
 
@@ -11,13 +11,13 @@ Bookmark this URL - it's your permanent access point to StreamRateHub!
 ## 🎯 Quick Actions
 
 ### Access the Application
-Simply visit: **https://preview-01x0eatj.ui.pythagora.ai**
+Simply visit: **https://preview-0hf1ju3b.ui.pythagora.ai**
 
 ### Test the API Health
-Visit: **https://preview-01x0eatj.ui.pythagora.ai/api/health**
+Visit: **https://preview-0hf1ju3b.ui.pythagora.ai/api/health**
 
 ### Search for a Movie (Browser)
-Visit: **https://preview-01x0eatj.ui.pythagora.ai/api/search?query=Inception**
+Visit: **https://preview-0hf1ju3b.ui.pythagora.ai/api/search?query=Inception**
 (Replace "Inception" with any movie or TV show name)
 
 ---
@@ -73,13 +73,13 @@ node scripts/cleanup-database.js   # Cleanup database (placeholder)
 ### Using cURL
 ```bash
 # Health check
-curl https://preview-01x0eatj.ui.pythagora.ai/api/health
+curl https://preview-0hf1ju3b.ui.pythagora.ai/api/health
 
 # Search (GET)
-curl "https://preview-01x0eatj.ui.pythagora.ai/api/search?query=The%20Matrix"
+curl "https://preview-0hf1ju3b.ui.pythagora.ai/api/search?query=The%20Matrix"
 
 # Search (POST)
-curl -X POST https://preview-01x0eatj.ui.pythagora.ai/api/search \
+curl -X POST https://preview-0hf1ju3b.ui.pythagora.ai/api/search \
   -H "Content-Type: application/json" \
   -d '{"query": "The Matrix"}'
 ```
@@ -88,7 +88,7 @@ curl -X POST https://preview-01x0eatj.ui.pythagora.ai/api/search \
 ```javascript
 // Search for a movie
 const response = await fetch(
-  'https://preview-01x0eatj.ui.pythagora.ai/api/search',
+  'https://preview-0hf1ju3b.ui.pythagora.ai/api/search',
   {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

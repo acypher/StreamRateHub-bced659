@@ -19,7 +19,7 @@ app.enable('strict routing');
 const allowedOrigins = [
   'http://localhost:5173', // Development
   'http://localhost:3000', // Development alternative
-  'https://preview-01x0eatj.ui.pythagora.ai', // Pythagora preview
+  'https://preview-0hf1ju3b.ui.pythagora.ai', // Pythagora preview
   // Add your production URLs here when you deploy:
   // 'https://cinecite.acypher.com',
   // 'https://acypher.com',

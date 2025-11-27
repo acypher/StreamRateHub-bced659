@@ -22,7 +22,7 @@ const colors = {
 };
 
 // Deployment configuration
-const DEPLOYMENT_URL = 'https://preview-01x0eatj.ui.pythagora.ai';
+const DEPLOYMENT_URL = 'https://preview-0hf1ju3b.ui.pythagora.ai';
 const API_BASE = `${DEPLOYMENT_URL}/api`;
 
 /**
