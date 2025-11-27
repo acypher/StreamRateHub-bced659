@@ -9,6 +9,7 @@ export interface Rating {
 export interface StreamingPlatform {
   name: string;
   cost?: string;
+  url?: string;
 }
 
 export interface SearchResult {

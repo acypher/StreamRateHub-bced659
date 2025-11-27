@@ -17,6 +17,7 @@ interface RatingData {
 interface StreamingPlatform {
   name: string;
   cost?: string; // e.g., "Free with subscription", "Rent $3.99", "Buy $14.99"
+  url?: string; // URL to the platform's page for adding to My List
 }
 
 interface ScrapedData {
@@ -546,6 +547,45 @@ async function scrapeIMDB(query: string): Promise<Partial<ScrapedData>> {
 }
 
 /**
+ * Generates platform-specific URLs for adding titles to "My List"
+ */
+function generatePlatformUrl(platformName: string, title: string): string {
+  console.log(`[ScrapingService] Generating URL for ${platformName} with title: ${title}`);
+
+  const encodedTitle = encodeURIComponent(title);
+  const searchTitle = title.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '+');
+
+  switch (platformName.toLowerCase()) {
+    case 'netflix':
+      return `https://www.netflix.com/search?q=${searchTitle}`;
+    case 'prime':
+    case 'amazon prime':
+      return `https://www.amazon.com/s?k=${encodedTitle}&i=instant-video`;
+    case 'apple tv':
+    case 'apple tv+':
+      return `https://tv.apple.com/search?q=${encodedTitle}`;
+    case 'hbo':
+    case 'hbo max':
+    case 'max':
+      return `https://www.max.com/search?q=${encodedTitle}`;
+    case 'disney':
+    case 'disney+':
+    case 'disney plus':
+      return `https://www.disneyplus.com/search?q=${encodedTitle}`;
+    case 'hulu':
+      return `https://www.hulu.com/search?q=${encodedTitle}`;
+    case 'paramount+':
+    case 'paramount plus':
+      return `https://www.paramountplus.com/search/?query=${encodedTitle}`;
+    case 'peacock':
+      return `https://www.peacocktv.com/search?q=${encodedTitle}`;
+    default:
+      // Generic search URL as fallback
+      return `https://www.google.com/search?q=${encodedTitle}+${platformName}+watch`;
+  }
+}
+
+/**
  * Generates fallback streaming platform data when scraping fails
  * This provides a realistic set of streaming options based on content characteristics
  */
@@ -692,6 +732,13 @@ function aggregateData(rtData: Partial<ScrapedData>, mcData: Partial<ScrapedData
     console.log('[ScrapingService] No streaming data scraped, generating fallback data');
     streamingPlatforms = generateFallbackStreamingData(title, year, ratings);
   }
+
+  // Add URLs to all streaming platforms
+  streamingPlatforms = streamingPlatforms.map(platform => ({
+    ...platform,
+    url: platform.url || generatePlatformUrl(platform.name, title),
+  }));
+  console.log(`[ScrapingService] Added URLs to ${streamingPlatforms.length} platforms`);
 
   // Generate reviewer summary based on available ratings
   let reviewerSummary: string | undefined;

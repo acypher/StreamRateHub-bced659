@@ -1,4 +1,4 @@
-import { Tv } from 'lucide-react';
+import { Tv, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { StreamingPlatform } from '@/api/search';
 
@@ -25,24 +25,45 @@ export function WhereToWatch({ platforms }: WhereToWatchProps) {
       </CardHeader>
       <CardContent className="pt-6">
         <ul className="space-y-3">
-          {platforms.map((platform, index) => (
-            <li
-              key={index}
-              className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-600"></div>
-                <span className="font-semibold text-lg text-gray-900 dark:text-gray-100">
-                  {platform.name}
-                </span>
-              </div>
-              {platform.cost && (
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-3 py-1 rounded-full border border-gray-300 dark:border-gray-600">
-                  {platform.cost}
-                </span>
-              )}
-            </li>
-          ))}
+          {platforms.map((platform, index) => {
+            const PlatformContent = (
+              <>
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-600 to-blue-600"></div>
+                  <span className="font-semibold text-lg text-gray-900 dark:text-gray-100">
+                    {platform.name}
+                  </span>
+                  {platform.url && (
+                    <ExternalLink className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                  )}
+                </div>
+                {platform.cost && (
+                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-3 py-1 rounded-full border border-gray-300 dark:border-gray-600">
+                    {platform.cost}
+                  </span>
+                )}
+              </>
+            );
+
+            return (
+              <li key={index}>
+                {platform.url ? (
+                  <a
+                    href={platform.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 hover:shadow-md hover:scale-[1.02] transition-all border border-gray-200 dark:border-gray-700 cursor-pointer"
+                  >
+                    {PlatformContent}
+                  </a>
+                ) : (
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700">
+                    {PlatformContent}
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ul>
         {platforms.length === 0 && (
           <p className="text-gray-500 dark:text-gray-400 text-center italic py-4">
