@@ -20,13 +20,13 @@ export function Header() {
         </div>
         <div className="flex items-center gap-4">
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={() => navigate("/url-info")}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 border-2 border-blue-500 text-blue-600 hover:bg-blue-50 dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-950 font-semibold"
           >
             <Link2 className="h-4 w-4" />
-            <span className="hidden sm:inline">URL Info</span>
+            <span>URL Info</span>
           </Button>
           <ThemeToggle />
         </div>
