@@ -14,6 +14,11 @@ interface RatingData {
   audienceRating?: string;
 }
 
+interface StreamingPlatform {
+  name: string;
+  cost?: string; // e.g., "Free with subscription", "Rent $3.99", "Buy $14.99"
+}
+
 interface ScrapedData {
   title: string;
   year?: string;
@@ -22,6 +27,7 @@ interface ScrapedData {
   plot?: string;
   cast?: string[];
   reviewerSummary?: string;
+  streamingPlatforms?: StreamingPlatform[];
 }
 
 /**
@@ -92,6 +98,7 @@ async function scrapeRottenTomatoes(query: string): Promise<Partial<ScrapedData>
     let audienceScore: string | undefined;
     let plot: string | undefined;
     const cast: string[] = [];
+    const streamingPlatforms: StreamingPlatform[] = [];
 
     // Try to extract data from JSON-LD
     const jsonLdScript = $movie('script[type="application/ld+json"]').first();
@@ -133,6 +140,34 @@ async function scrapeRottenTomatoes(query: string): Promise<Partial<ScrapedData>
       }
     }
 
+    // Try to extract streaming platform data from the page
+    try {
+      // Look for affiliate links or streaming service mentions
+      $movie('where-to-watch a, [data-qa="affiliate-link"]').each((_, el) => {
+        const linkText = $movie(el).text().trim().toLowerCase();
+        const href = $movie(el).attr('href') || '';
+
+        if (linkText.includes('netflix') || href.includes('netflix')) {
+          streamingPlatforms.push({ name: 'Netflix' });
+        } else if (linkText.includes('prime') || linkText.includes('amazon') || href.includes('amazon')) {
+          streamingPlatforms.push({ name: 'Prime' });
+        } else if (linkText.includes('apple') || href.includes('apple')) {
+          streamingPlatforms.push({ name: 'Apple TV' });
+        } else if (linkText.includes('hbo') || linkText.includes('max') || href.includes('hbo')) {
+          streamingPlatforms.push({ name: 'HBO' });
+        } else if (linkText.includes('disney') || href.includes('disney')) {
+          streamingPlatforms.push({ name: 'Disney' });
+        } else if (linkText.includes('hulu') || href.includes('hulu')) {
+          streamingPlatforms.push({ name: 'Hulu' });
+        }
+      });
+
+      console.log(`[ScrapingService] RT Streaming platforms found: ${streamingPlatforms.length}`);
+    } catch (e) {
+      const err = e as Error;
+      console.log('[ScrapingService] Failed to extract RT streaming data:', err.message);
+    }
+
     console.log(`[ScrapingService] Rotten Tomatoes data extracted: Tomatometer=${tomatometer}%, Audience=${audienceScore}%`);
 
     return {
@@ -145,6 +180,7 @@ async function scrapeRottenTomatoes(query: string): Promise<Partial<ScrapedData>
       }],
       plot: plot || undefined,
       cast: cast.length > 0 ? cast : undefined,
+      streamingPlatforms: streamingPlatforms.length > 0 ? streamingPlatforms : undefined,
     };
   } catch (error) {
     const err = error as Error;
@@ -288,7 +324,7 @@ async function scrapeMetacritic(query: string): Promise<Partial<ScrapedData>> {
 }
 
 /**
- * Scrapes IMDB for movie/TV show data
+ * Scrapes IMDB for movie/TV show data including streaming availability
  */
 async function scrapeIMDB(query: string): Promise<Partial<ScrapedData>> {
   console.log(`[ScrapingService] Scraping IMDB for: ${query}`);
@@ -384,6 +420,102 @@ async function scrapeIMDB(query: string): Promise<Partial<ScrapedData>> {
       if (reviewText) reviewTexts.push(reviewText);
     });
 
+    // Extract streaming platform data
+    const streamingPlatforms: StreamingPlatform[] = [];
+    try {
+      // Look for "Watch on" section or streaming service buttons
+      $movie('[data-testid*="watch"], a[href*="justwatch"], .ipc-watch-options').each((_, el) => {
+        const text = $movie(el).text().toLowerCase();
+        const href = $movie(el).attr('href') || '';
+
+        // Check for specific platforms
+        if (text.includes('netflix') || href.includes('netflix')) {
+          if (!streamingPlatforms.find(p => p.name === 'Netflix')) {
+            streamingPlatforms.push({ name: 'Netflix' });
+          }
+        }
+        if (text.includes('prime') || text.includes('amazon') || href.includes('amazon')) {
+          if (!streamingPlatforms.find(p => p.name === 'Prime')) {
+            streamingPlatforms.push({ name: 'Prime' });
+          }
+        }
+        if (text.includes('apple tv') || href.includes('apple')) {
+          if (!streamingPlatforms.find(p => p.name === 'Apple TV')) {
+            streamingPlatforms.push({ name: 'Apple TV' });
+          }
+        }
+        if (text.includes('hbo') || text.includes('max') || href.includes('hbo')) {
+          if (!streamingPlatforms.find(p => p.name === 'HBO')) {
+            streamingPlatforms.push({ name: 'HBO' });
+          }
+        }
+        if (text.includes('disney') || href.includes('disney')) {
+          if (!streamingPlatforms.find(p => p.name === 'Disney')) {
+            streamingPlatforms.push({ name: 'Disney' });
+          }
+        }
+        if (text.includes('hulu') || href.includes('hulu')) {
+          if (!streamingPlatforms.find(p => p.name === 'Hulu')) {
+            streamingPlatforms.push({ name: 'Hulu' });
+          }
+        }
+      });
+
+      // Check for rent/buy options and add cost information
+      $movie('button, a').each((_, el) => {
+        const text = $movie(el).text();
+        const rentMatch = text.match(/rent.*?\$(\d+\.?\d*)/i);
+        const buyMatch = text.match(/buy.*?\$(\d+\.?\d*)/i);
+
+        if (rentMatch) {
+          const platform = text.toLowerCase();
+          if (platform.includes('prime') || platform.includes('amazon')) {
+            const existing = streamingPlatforms.find(p => p.name === 'Prime');
+            if (existing && !existing.cost) {
+              existing.cost = `Rent $${rentMatch[1]}`;
+            } else if (!existing) {
+              streamingPlatforms.push({ name: 'Prime', cost: `Rent $${rentMatch[1]}` });
+            }
+          } else if (platform.includes('apple')) {
+            const existing = streamingPlatforms.find(p => p.name === 'Apple TV');
+            if (existing && !existing.cost) {
+              existing.cost = `Rent $${rentMatch[1]}`;
+            } else if (!existing) {
+              streamingPlatforms.push({ name: 'Apple TV', cost: `Rent $${rentMatch[1]}` });
+            }
+          }
+        }
+
+        if (buyMatch) {
+          const platform = text.toLowerCase();
+          if (platform.includes('prime') || platform.includes('amazon')) {
+            const existing = streamingPlatforms.find(p => p.name === 'Prime');
+            if (existing && existing.cost && existing.cost.includes('Rent')) {
+              existing.cost += ` / Buy $${buyMatch[1]}`;
+            } else if (existing && !existing.cost) {
+              existing.cost = `Buy $${buyMatch[1]}`;
+            } else if (!existing) {
+              streamingPlatforms.push({ name: 'Prime', cost: `Buy $${buyMatch[1]}` });
+            }
+          } else if (platform.includes('apple')) {
+            const existing = streamingPlatforms.find(p => p.name === 'Apple TV');
+            if (existing && existing.cost && existing.cost.includes('Rent')) {
+              existing.cost += ` / Buy $${buyMatch[1]}`;
+            } else if (existing && !existing.cost) {
+              existing.cost = `Buy $${buyMatch[1]}`;
+            } else if (!existing) {
+              streamingPlatforms.push({ name: 'Apple TV', cost: `Buy $${buyMatch[1]}` });
+            }
+          }
+        }
+      });
+
+      console.log(`[ScrapingService] IMDB Streaming platforms found: ${streamingPlatforms.length}`);
+    } catch (e) {
+      const err = e as Error;
+      console.log('[ScrapingService] Failed to extract IMDB streaming data:', err.message);
+    }
+
     console.log(`[ScrapingService] IMDB data extracted: Rating=${rating}/10`);
 
     return {
@@ -398,6 +530,7 @@ async function scrapeIMDB(query: string): Promise<Partial<ScrapedData>> {
       plot: plot || undefined,
       cast: cast.length > 0 ? cast.slice(0, 8) : undefined,
       reviewerSummary: reviewTexts.length > 0 ? reviewTexts.join(' ') : undefined,
+      streamingPlatforms: streamingPlatforms.length > 0 ? streamingPlatforms : undefined,
     };
   } catch (error) {
     const err = error as Error;
@@ -435,6 +568,28 @@ function aggregateData(rtData: Partial<ScrapedData>, mcData: Partial<ScrapedData
 
   // Combine cast (prefer IMDB, fallback to others)
   const cast = imdbData.cast || rtData.cast || mcData.cast;
+
+  // Aggregate streaming platforms from all sources (remove duplicates)
+  const streamingPlatformsMap = new Map<string, StreamingPlatform>();
+
+  [rtData.streamingPlatforms, imdbData.streamingPlatforms].forEach(platforms => {
+    if (platforms) {
+      platforms.forEach(platform => {
+        if (!streamingPlatformsMap.has(platform.name)) {
+          streamingPlatformsMap.set(platform.name, platform);
+        } else {
+          // If platform exists and new data has cost info, update it
+          const existing = streamingPlatformsMap.get(platform.name)!;
+          if (platform.cost && !existing.cost) {
+            existing.cost = platform.cost;
+          }
+        }
+      });
+    }
+  });
+
+  const streamingPlatforms = Array.from(streamingPlatformsMap.values());
+  console.log(`[ScrapingService] Aggregated streaming platforms: ${streamingPlatforms.length}`);
 
   // Generate reviewer summary based on available ratings
   let reviewerSummary: string | undefined;
@@ -496,6 +651,7 @@ function aggregateData(rtData: Partial<ScrapedData>, mcData: Partial<ScrapedData
     plot,
     cast,
     reviewerSummary,
+    streamingPlatforms: streamingPlatforms.length > 0 ? streamingPlatforms : undefined,
   };
 }
 

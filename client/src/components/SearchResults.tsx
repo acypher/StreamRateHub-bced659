@@ -3,6 +3,7 @@ import { RatingsTable } from './RatingsTable';
 import { PlotSummary } from './PlotSummary';
 import { CastList } from './CastList';
 import { ReviewerSummary } from './ReviewerSummary';
+import { WhereToWatch } from './WhereToWatch';
 import type { SearchResult } from '@/api/search';
 
 interface SearchResultsProps {
@@ -19,8 +20,8 @@ export function SearchResults({ result }: SearchResultsProps) {
         <div className="flex items-start gap-6">
           {result.posterUrl && (
             <div className="flex-shrink-0">
-              <img 
-                src={result.posterUrl} 
+              <img
+                src={result.posterUrl}
                 alt={result.title}
                 className="w-32 h-48 object-cover rounded-lg shadow-lg border-4 border-white/20"
               />
@@ -52,6 +53,9 @@ export function SearchResults({ result }: SearchResultsProps) {
 
       {/* Reviewer Summary */}
       <ReviewerSummary summary={result.reviewerSummary} />
+
+      {/* Where to Watch - at the bottom */}
+      <WhereToWatch platforms={result.streamingPlatforms} />
     </div>
   );
 }

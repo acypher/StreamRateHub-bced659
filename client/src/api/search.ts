@@ -6,6 +6,11 @@ export interface Rating {
   audienceRating?: string;
 }
 
+export interface StreamingPlatform {
+  name: string;
+  cost?: string;
+}
+
 export interface SearchResult {
   title: string;
   year?: string;
@@ -14,12 +19,13 @@ export interface SearchResult {
   plot?: string;
   cast?: string[];
   reviewerSummary?: string;
+  streamingPlatforms?: StreamingPlatform[];
 }
 
 // Description: Search for a movie or TV show by name
 // Endpoint: POST /api/search
 // Request: { query: string }
-// Response: { title: string, year?: string, posterUrl?: string, ratings: Rating[], plot?: string, cast?: string[], reviewerSummary?: string }
+// Response: { title: string, year?: string, posterUrl?: string, ratings: Rating[], plot?: string, cast?: string[], reviewerSummary?: string, streamingPlatforms?: StreamingPlatform[] }
 export const searchMedia = async (query: string): Promise<SearchResult> => {
   console.log('[API] Searching for media:', query);
 
