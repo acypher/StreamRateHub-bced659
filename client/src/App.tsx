@@ -4,6 +4,7 @@ import { Toaster } from "./components/ui/toaster"
 import { Layout } from "./components/Layout"
 import { Home } from "./pages/Home"
 import { BlankPage } from "./pages/BlankPage"
+import UrlManagement from "./pages/UrlManagement"
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="/url-info" element={<UrlManagement />} />
           </Route>
           <Route path="*" element={<BlankPage />} />
         </Routes>

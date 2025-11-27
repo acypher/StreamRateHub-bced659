@@ -1,6 +1,7 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import searchRoutes from './searchRoutes';
+import urlRoutes from './urlRoutes';
 
 const router = express.Router();
 
@@ -28,5 +29,8 @@ router.get("/api/health", (req: Request, res: Response) => {
 
 // Search routes
 router.use("/api/search", searchRoutes);
+
+// URL management routes
+router.use("/api", urlRoutes);
 
 export default router;

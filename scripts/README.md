@@ -29,7 +29,40 @@ See the `.deployment-url` file in the project root for more details about availa
 
 ## Available Scripts
 
-### 1. Deployment Verification
+### 1. URL Monitoring
+
+**File:** `monitor-url.js`
+
+**Purpose:** Monitors the application's accessibility and checks if URLs are responding correctly. Can be run periodically to ensure the application remains accessible and detect URL changes or redirects.
+
+**Usage (from project root):**
+```bash
+node scripts/monitor-url.js
+```
+
+**What it does:**
+- Tests all critical endpoints (health, URL info, permanent URL, frontend)
+- Detects redirects that might indicate URL changes
+- Measures response times for each endpoint
+- Provides detailed health status and recommendations
+- Exits with appropriate status code for automation
+
+**When to use:**
+- When experiencing redirect issues (e.g., redirect to pythagora.ai)
+- To verify your permanent URL is working correctly
+- As a periodic health check (e.g., cron job)
+- After deployment or DNS changes
+- When troubleshooting URL access problems
+
+**Example Output:**
+```
+✅ Passed: 4
+⚠️  Redirects: 0
+❌ Failed: 0
+✅ ALL SYSTEMS OPERATIONAL
+```
+
+### 2. Deployment Verification
 
 **File:** `verify-deployment.js`
 
@@ -52,7 +85,7 @@ node scripts/verify-deployment.js
 - As part of CI/CD pipeline
 - When troubleshooting deployment issues
 
-### 2. CORS Configuration Test
+### 3. CORS Configuration Test
 
 **File:** `test-cors.js`
 
@@ -73,7 +106,7 @@ node scripts/test-cors.js
 - When debugging CORS-related errors
 - Before deploying to a new environment
 
-### 2. API Testing Script
+### 4. API Testing Script
 
 **File:** `test-api.js`
 
@@ -102,7 +135,7 @@ node scripts/test-api.js
 API_URL=https://your-api-url.com node scripts/test-api.js
 ```
 
-### 3. Dependency Check Script
+### 5. Dependency Check Script
 
 **File:** `check-dependencies.js`
 
@@ -126,7 +159,7 @@ node scripts/check-dependencies.js
 - When troubleshooting setup issues
 - Before deployment
 
-### 4. Database Seed Script
+### 6. Database Seed Script
 
 **File:** `seed-data.js`
 
@@ -145,7 +178,7 @@ node scripts/seed-data.js
 - When adding initial data requirements in the future
 - For setting up default configuration values
 
-### 5. Database Cleanup Script
+### 7. Database Cleanup Script
 
 **File:** `cleanup-database.js`
 
@@ -186,12 +219,27 @@ When creating new scripts:
 
 ## Common Tasks
 
+### Troubleshooting URL Issues
+```bash
+# Make sure you're in the project root directory first!
+cd /pythagora/pythagora-core/workspace/StreamRateHub-bced659
+
+# Monitor URL health and detect redirects
+node scripts/monitor-url.js
+
+# If issues are detected, check the URL info page in your browser:
+# https://preview-0ag1onvs.ui.pythagora.ai/url-info
+```
+
 ### Verifying Deployment
 ```bash
 # Make sure you're in the project root directory first!
 cd /pythagora/pythagora-core/workspace/StreamRateHub-bced659
 
-# Verify the permanent URL is accessible
+# Monitor URL health first
+node scripts/monitor-url.js
+
+# Then verify the permanent URL is accessible
 node scripts/verify-deployment.js
 ```
 

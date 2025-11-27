@@ -1,5 +1,6 @@
-import { Sparkles } from "lucide-react"
+import { Sparkles, Link2 } from "lucide-react"
 import { ThemeToggle } from "./ui/theme-toggle"
+import { Button } from "./ui/button"
 import { useNavigate } from "react-router-dom"
 
 export function Header() {
@@ -18,6 +19,15 @@ export function Header() {
           </span>
         </div>
         <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/url-info")}
+            className="flex items-center gap-2"
+          >
+            <Link2 className="h-4 w-4" />
+            <span className="hidden sm:inline">URL Info</span>
+          </Button>
           <ThemeToggle />
         </div>
       </div>
