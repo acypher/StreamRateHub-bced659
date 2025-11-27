@@ -2,6 +2,52 @@ import express, { Request, Response } from 'express';
 
 const router = express.Router();
 
+// Helper function to get the actual public URL from the request
+// This handles proxies and forwarded headers properly
+function getPublicUrl(req: Request): string {
+  // Check for forwarded protocol and host (common in proxies)
+  const forwardedProto = req.get('x-forwarded-proto');
+  const forwardedHost = req.get('x-forwarded-host');
+
+  // Check for original host (some proxies use this)
+  const originalHost = req.get('x-original-host');
+
+  // Check for Pythagora-specific headers
+  const pythagoraHost = req.get('x-pythagora-host');
+
+  // Determine the protocol
+  let protocol = forwardedProto || req.protocol || 'https';
+  // Remove any trailing characters from protocol
+  protocol = protocol.split(',')[0].trim();
+
+  // Determine the host - priority order:
+  // 1. Pythagora-specific header
+  // 2. Forwarded host
+  // 3. Original host
+  // 4. Standard host header
+  // 5. Hardcoded fallback for Pythagora environment
+  let host = pythagoraHost || forwardedHost || originalHost || req.get('host');
+
+  // If we're still on localhost but have forwarded headers, use the Pythagora URL
+  if (host === 'localhost:3000' && (forwardedProto || forwardedHost)) {
+    host = 'preview-0ag1onvs.ui.pythagora.ai';
+    protocol = 'https';
+  }
+
+  // Fallback to known deployment URL if we detect localhost in production-like environment
+  if (host?.includes('localhost') && process.env.NODE_ENV !== 'development') {
+    host = 'preview-0ag1onvs.ui.pythagora.ai';
+    protocol = 'https';
+  }
+
+  const publicUrl = `${protocol}://${host}`;
+
+  console.log(`[URL Detection] Protocol: ${protocol}, Host: ${host}, Final URL: ${publicUrl}`);
+  console.log(`[URL Detection] Headers - X-Forwarded-Proto: ${forwardedProto}, X-Forwarded-Host: ${forwardedHost}, Host: ${req.get('host')}`);
+
+  return publicUrl;
+}
+
 // Description: Get current deployment URL information
 // Endpoint: GET /api/url-info
 // Request: {}
@@ -10,9 +56,7 @@ router.get('/url-info', (req: Request, res: Response) => {
   try {
     console.log('[URL Info] Fetching deployment URL information');
 
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const currentUrl = `${protocol}://${host}`;
+    const currentUrl = getPublicUrl(req);
     const environment = process.env.NODE_ENV || 'development';
 
     const urlInfo = {
@@ -41,9 +85,7 @@ router.get('/url-info', (req: Request, res: Response) => {
 // Response: { isCorrectUrl: boolean, currentUrl: string, expectedUrl: string, message: string }
 router.get('/verify-url', (req: Request, res: Response) => {
   try {
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const currentUrl = `${protocol}://${host}`;
+    const currentUrl = getPublicUrl(req);
     const expectedUrl = req.query.expectedUrl as string || 'https://preview-0ag1onvs.ui.pythagora.ai';
 
     const isCorrectUrl = currentUrl === expectedUrl;
@@ -76,9 +118,7 @@ router.get('/permanent-url', (req: Request, res: Response) => {
   try {
     console.log('[Permanent URL] Fetching permanent URL information');
 
-    const protocol = req.protocol;
-    const host = req.get('host');
-    const currentUrl = `${protocol}://${host}`;
+    const currentUrl = getPublicUrl(req);
 
     const response = {
       permanentUrl: currentUrl,
