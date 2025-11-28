@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 
@@ -20,6 +20,11 @@ export function SearchBar({ onSearch, isLoading = false, initialValue = '' }: Se
     }
   };
 
+  const handleClear = () => {
+    console.log('[SearchBar] Clearing search input');
+    setQuery('');
+  };
+
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-2xl">
       <div className="flex gap-2">
@@ -31,8 +36,19 @@ export function SearchBar({ onSearch, isLoading = false, initialValue = '' }: Se
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             disabled={isLoading}
-            className="pl-10 h-12 text-lg bg-white dark:bg-gray-800 border-2 focus:border-primary transition-all"
+            className="pl-10 pr-10 h-12 text-lg bg-white dark:bg-gray-800 border-2 focus:border-primary transition-all"
           />
+          {query && (
+            <button
+              type="button"
+              onClick={handleClear}
+              disabled={isLoading}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Clear search"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
         </div>
         <Button 
           type="submit" 

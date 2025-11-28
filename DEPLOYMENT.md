@@ -1,8 +1,8 @@
-# StreamRateHub Deployment Guide
+# CineCite Deployment Guide
 
 ## Quick Start - Free Deployment (Recommended)
 
-This guide will help you deploy StreamRateHub to production using free services.
+This guide will help you deploy CineCite to production using free services.
 
 ### Prerequisites
 - ✅ GitHub account (you have this)
@@ -21,14 +21,14 @@ This guide will help you deploy StreamRateHub to production using free services.
    - Click **"Build a Database"**
    - Select **"M0 FREE"** tier
    - Choose cloud provider and region closest to you
-   - Name cluster: `streamratehub`
+   - Name cluster: `cinecite`
    - Click **"Create"**
 
 4. Create database user:
    - Click **"Security" → "Database Access"**
    - Click **"Add New Database User"**
    - Authentication Method: Password
-   - Username: `streamratehub_user`
+   - Username: `cinecite_user`
    - Password: (Click "Autogenerate Secure Password" and SAVE IT)
    - User Privileges: "Read and write to any database"
    - Click **"Add User"**
@@ -44,13 +44,13 @@ This guide will help you deploy StreamRateHub to production using free services.
    - Click **"Connect your application"**
    - Copy the connection string (looks like):
      ```
-     mongodb+srv://streamratehub_user:<password>@cluster0.xxxxx.mongodb.net/
+     mongodb+srv://cinecite_user:<password>@cluster0.xxxxx.mongodb.net/
      ```
    - Replace `<password>` with your actual password
-   - Add database name at the end: `/streamratehub`
+   - Add database name at the end: `/cinecite`
    - Final string should look like:
      ```
-     mongodb+srv://streamratehub_user:YourPassword123@cluster0.xxxxx.mongodb.net/streamratehub
+     mongodb+srv://cinecite_user:YourPassword123@cluster0.xxxxx.mongodb.net/cinecite
      ```
    - **SAVE THIS** - you'll need it in Step 2
 
@@ -73,10 +73,10 @@ This guide will help you deploy StreamRateHub to production using free services.
 
 5. Click **"Connect GitHub"** and authorize Render
 
-6. Select your StreamRateHub repository
+6. Select your CineCite repository
 
 7. Configure the service:
-   - **Name**: `streamratehub-api`
+   - **Name**: `cinecite-api`
    - **Region**: Choose closest to you
    - **Branch**: `main` (or your default branch)
    - **Root Directory**: `server`
@@ -99,11 +99,11 @@ This guide will help you deploy StreamRateHub to production using free services.
 
 10. Wait 5-10 minutes for first deployment
 
-11. Once deployed, copy your backend URL (e.g., `https://streamratehub-api.onrender.com`)
+11. Once deployed, copy your backend URL (e.g., `https://cinecite-api.onrender.com`)
 
 12. **Test your backend**:
-    - Visit: `https://streamratehub-api.onrender.com/`
-    - You should see: "StreamRateHub API is running"
+    - Visit: `https://cinecite-api.onrender.com/`
+    - You should see: "CineCite API is running"
 
 ---
 
@@ -115,7 +115,7 @@ This guide will help you deploy StreamRateHub to production using free services.
 
 3. Click **"Add New..."** → **"Project"**
 
-4. Click **"Import"** next to your StreamRateHub repository
+4. Click **"Import"** next to your CineCite repository
 
 5. Configure the project:
    - **Framework Preset**: Vite
@@ -128,13 +128,13 @@ This guide will help you deploy StreamRateHub to production using free services.
 
    | Key | Value |
    |-----|-------|
-   | `VITE_API_URL` | Your Render backend URL (e.g., `https://streamratehub-api.onrender.com`) |
+   | `VITE_API_URL` | Your Render backend URL (e.g., `https://cinecite-api.onrender.com`) |
 
 7. Click **"Deploy"**
 
 8. Wait 2-5 minutes for deployment
 
-9. Once deployed, you'll get a URL like: `https://streamratehub-abc123.vercel.app`
+9. Once deployed, you'll get a URL like: `https://cinecite-abc123.vercel.app`
 
 10. **Test your frontend**:
     - Visit your Vercel URL
@@ -157,7 +157,7 @@ Now that you have your frontend URL, you need to add it to the backend's allowed
      'http://localhost:5173', // Development
      'http://localhost:3000', // Development alternative
      'https://preview-14ngc5z7.ui.pythagora.ai', // Pythagora preview
-     'https://streamratehub-abc123.vercel.app', // Your Vercel URL
+     'https://cinecite-abc123.vercel.app', // Your Vercel URL
    ];
    ```
 
@@ -178,7 +178,7 @@ Now that you have your frontend URL, you need to add it to the backend's allowed
 
 1. In Vercel dashboard, go to your project → **Settings** → **Domains**
 
-2. Click **"Add"** and enter: `streamratehub.acypher.com`
+2. Click **"Add"** and enter: `cinecite.acypher.com`
 
 3. Vercel will show you DNS records to add
 
@@ -188,7 +188,7 @@ Now that you have your frontend URL, you need to add it to the backend's allowed
    - Click **"Manage"**
    - Click **"Add Record"**
    - Select **"CNAME"**
-   - **Name**: `streamratehub`
+   - **Name**: `cinecite`
    - **Record**: `cname.vercel-dns.com` (or value Vercel provides)
    - **TTL**: 14400
    - Click **"Add Record"**
@@ -197,14 +197,14 @@ Now that you have your frontend URL, you need to add it to the backend's allowed
 
 6. Vercel will automatically provision SSL certificate
 
-7. Update CORS in backend to include: `https://streamratehub.acypher.com`
+7. Update CORS in backend to include: `https://cinecite.acypher.com`
 
 #### Option B: Deploy frontend to InMotion
 
 1. Build your frontend locally:
    ```bash
    cd client
-   echo "VITE_API_URL=https://streamratehub-api.onrender.com" > .env.production
+   echo "VITE_API_URL=https://cinecite-api.onrender.com" > .env.production
    npm install
    npm run build
    ```
@@ -213,15 +213,15 @@ Now that you have your frontend URL, you need to add it to the backend's allowed
    - Log into InMotion cPanel
    - Go to **File Manager**
    - Navigate to `public_html`
-   - Create folder: `streamratehub`
+   - Create folder: `cinecite`
    - Upload all files from `client/dist/*` to this folder
 
-3. Access your site at: `https://acypher.com/streamratehub`
+3. Access your site at: `https://acypher.com/cinecite`
 
 4. (Optional) Create subdomain:
    - In cPanel → **Domains** → **Subdomains**
-   - Create subdomain: `streamratehub.acypher.com`
-   - Point it to `/public_html/streamratehub`
+   - Create subdomain: `cinecite.acypher.com`
+   - Point it to `/public_html/cinecite`
 
 ---
 

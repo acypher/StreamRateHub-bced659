@@ -1,4 +1,4 @@
-# StreamRateHub - Quick Deployment Reference
+# CineCite - Quick Deployment Reference
 
 ## 🚀 Fastest Path to Production (30 minutes)
 
@@ -20,7 +20,7 @@
 
 **Connection string format:**
 ```
-mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/streamratehub
+mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/cinecite
 ```
 
 ---
@@ -41,7 +41,7 @@ mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/streamratehub
    NODE_ENV = production
    PORT = 3000
    ```
-6. Deploy → Get URL: `https://streamratehub-api.onrender.com`
+6. Deploy → Get URL: `https://cinecite-api.onrender.com`
 
 **⚠️ Free tier sleeps after 15 min idle (wakes in 30 sec)**
 
@@ -57,9 +57,9 @@ mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/streamratehub
    - Output: `dist`
 4. Environment variable:
    ```
-   VITE_API_URL = https://streamratehub-api.onrender.com
+   VITE_API_URL = https://cinecite-api.onrender.com
    ```
-5. Deploy → Get URL: `https://streamratehub-xyz.vercel.app`
+5. Deploy → Get URL: `https://cinecite-xyz.vercel.app`
 
 ---
 
@@ -70,7 +70,7 @@ mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/streamratehub
    const allowedOrigins = [
      'http://localhost:5173',
      'https://preview-14ngc5z7.ui.pythagora.ai',
-     'https://streamratehub-xyz.vercel.app', // ← ADD THIS
+     'https://cinecite-xyz.vercel.app', // ← ADD THIS
    ];
    ```
 3. Commit + push → Render auto-redeploys
@@ -79,14 +79,14 @@ mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/streamratehub
 
 ### ☐ Step 5: Custom Domain (Optional, 10 min)
 **Point subdomain to Vercel:**
-1. Vercel: Settings → Domains → Add `streamratehub.acypher.com`
+1. Vercel: Settings → Domains → Add `cinecite.acypher.com`
 2. InMotion cPanel → Zone Editor → Add CNAME:
-   - Name: `streamratehub`
+   - Name: `cinecite`
    - Points to: `cname.vercel-dns.com`
 3. Wait 10-60 min for DNS
 4. Add domain to CORS in backend
 
-**Your site:** https://streamratehub.acypher.com ✅
+**Your site:** https://cinecite.acypher.com ✅
 
 ---
 
@@ -178,9 +178,9 @@ git push origin main
 ---
 
 **Your app will be live at:**
-- Primary: `https://streamratehub-xyz.vercel.app`
-- Custom: `https://streamratehub.acypher.com` (after DNS setup)
-- Backend: `https://streamratehub-api.onrender.com`
+- Primary: `https://cinecite-xyz.vercel.app`
+- Custom: `https://cinecite.acypher.com` (after DNS setup)
+- Backend: `https://cinecite-api.onrender.com`
 
 **Total setup time: ~30 minutes**
 **Total cost: $0/month**

@@ -2,17 +2,10 @@ import dotenv from 'dotenv';
 import express from 'express';
 import { Request, Response } from 'express';
 import basicRoutes from './routes/index';
-import authRoutes from './routes/authRoutes';
-import { connectDB } from './config/database';
 import cors from 'cors';
 
 // Load environment variables
 dotenv.config();
-
-if (!process.env.DATABASE_URL) {
-  console.error("Error: DATABASE_URL variables in .env missing.");
-  process.exit(-1);
-}
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,11 +19,11 @@ app.enable('strict routing');
 const allowedOrigins = [
   'http://localhost:5173', // Development
   'http://localhost:3000', // Development alternative
-  'https://preview-14ngc5z7.ui.pythagora.ai', // Pythagora preview
+  'https://preview-0ag1onvs.ui.pythagora.ai', // Pythagora preview
   // Add your production URLs here when you deploy:
-  // 'https://streamratehub.acypher.com',
+  // 'https://cinecite.acypher.com',
   // 'https://acypher.com',
-  // 'https://streamratehub-xyz123.vercel.app', // Your Vercel URL
+  // 'https://cinecite-xyz123.vercel.app', // Your Vercel URL
 ];
 
 app.use(cors({
@@ -52,9 +45,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Database connection
-connectDB();
-
 app.on("error", (error: Error) => {
   console.error(`Server error: ${error.message}`);
   console.error(error.stack);
@@ -62,8 +52,6 @@ app.on("error", (error: Error) => {
 
 // Basic Routes
 app.use(basicRoutes);
-// Authentication Routes
-app.use('/api/auth', authRoutes);
 
 // If no routes handled the request, it's a 404
 app.use((req: Request, res: Response) => {
