@@ -24,6 +24,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
+        "openai": "^4.0.0",
     "puppeteer": "^24.31.0",
     "shared": "file:../shared"
   },
